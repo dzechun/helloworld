@@ -1,0 +1,29 @@
+person:
+  username: zhangsan
+  boss: true
+  birth: 2019/12/9
+  age: 18
+  interests: [篮球,足球]
+  animal: [cat,bird]
+#  score:
+#    english: 80
+#    math: 90
+  score: {english: 80,math: 90}
+  salary:
+    - 9999.98
+    - 9999.99
+  pet:
+    name: dog
+    weight: 101
+  allPets:
+    sick:
+      - {name: cat,weight: 101}
+      - name: dog
+        weight: 88.88
+      - name: rabbit
+        weight: 77.77
+    health:
+      - {name: cat,weight: 101}
+      - {name: dog,weight: 88.88}
+server:
+  port: 8090

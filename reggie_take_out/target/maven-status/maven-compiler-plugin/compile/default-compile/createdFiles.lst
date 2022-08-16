@@ -1,0 +1,5 @@
+com\itheima\reggie\controller\CategoryController.class
+com\itheima\reggie\mapper\CategoryMapper.class
+com\itheima\reggie\entity\Category.class
+com\itheima\reggie\service\CategoryService.class
+com\itheima\reggie\service\impl\CategoryServiceImpl.class

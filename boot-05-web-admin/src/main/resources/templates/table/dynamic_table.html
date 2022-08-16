@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>dynamic_table</title>
+</head>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>用户名</th>
+            <th>密码</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr class="gradeX" th:each="user: ${users}">
+                <td>Trident</td>
+                <td th:text="${user.userName}">Internet</td>
+                <td>[[${user.password}}]]</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
