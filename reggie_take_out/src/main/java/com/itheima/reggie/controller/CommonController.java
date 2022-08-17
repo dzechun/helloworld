@@ -2,7 +2,6 @@ package com.itheima.reggie.controller;
 
 
 import com.itheima.reggie.com.R;
-import jdk.internal.org.objectweb.asm.tree.FieldNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
