@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@RequestMapping("setmeal")
+@RequestMapping("/setmeal")
 public class SetmealController {
 
     @Resource
