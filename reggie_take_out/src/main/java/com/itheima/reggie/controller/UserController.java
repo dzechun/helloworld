@@ -77,6 +77,7 @@ public class UserController {
                 userService.save(user);
             }
             session.setAttribute("user",user.getId());
+            log.info("" + session.getAttribute("user"));
             return R.success(user);
         }
         return R.error("登录失败");
