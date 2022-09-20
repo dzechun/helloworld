@@ -12,10 +12,12 @@ import com.itheima.reggie.service.DishFlavorService;
 import com.itheima.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,6 +33,9 @@ public class DishController {
 
     @Resource
     private CategoryService categoryService;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品
@@ -107,6 +112,15 @@ public class DishController {
     @PutMapping
     public R<String> update(@RequestBody DishDto dishDto){
         dishService.updateWithFlavor(dishDto);
+
+        //清理所有菜品的缓存信息
+//        Set keys = redisTemplate.keys("dish_*");
+//        redisTemplate.delete(keys);
+
+        //清理某个分类下面的菜品缓存数据
+        String key = "dish_" + dishDto.getCategoryId() + "_1";
+        redisTemplate.delete(key);
+
         return R.success("修改菜品成功");
     }
 
@@ -131,6 +145,20 @@ public class DishController {
 
     @GetMapping("/list")
     public R<List<DishDto>> list(Dish dish){
+
+        List<DishDto> dishDtoList = null;
+
+        //设置redis缓存的动态key
+        String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
+
+        //查询redis中是否有菜品信息的缓存信息
+        dishDtoList = (List<DishDto>) redisTemplate.opsForValue().get(key);
+
+        //如果redis存在缓存信息，则返回菜品信息
+        if (dishDtoList != null){
+            return R.success(dishDtoList);
+        }
+
         //构造查询条件对象
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         //
@@ -142,7 +170,7 @@ public class DishController {
 
         List<Dish> list = dishService.list(queryWrapper);
 
-        List<DishDto> dishList = list.stream().map((item) -> {
+        dishDtoList = list.stream().map((item) -> {
             DishDto dishDto = new DishDto();
 
             BeanUtils.copyProperties(item,dishDto);
@@ -164,7 +192,10 @@ public class DishController {
             return dishDto;
         }).collect(Collectors.toList());
 
-        return R.success(dishList);
+        //如果不存在菜品缓存信息，则将数据库中的信息保存在redis中
+        redisTemplate.opsForValue().set(key,dishDtoList,60, TimeUnit.MINUTES);
+
+        return R.success(dishDtoList);
     }
 
 }
